@@ -1,6 +1,8 @@
 package executeCommandFromJava;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -9,7 +11,7 @@ import java.io.InputStreamReader;
 public class TestExecuteFromJava {
 
     public static void main(String[] args) {
-        String out = executeCommand("javac " + "D:\\ACP14\\ACP14\\src\\Test.java");
+        String out = executeCommand("javac " + "D:\\ACP14\\Test.java");
         if (out.length() == 0) System.out.println("Compiled!");
         else System.out.println("Bad code\n" + out);
 
@@ -19,6 +21,7 @@ public class TestExecuteFromJava {
     public static String executeCommand(String command) {
 
         StringBuffer output = new StringBuffer();
+        String error = "";
         Process p;
         try {
             p = Runtime.getRuntime().exec(command);
@@ -29,10 +32,27 @@ public class TestExecuteFromJava {
             while ((line = reader.readLine()) != null) {
                 output.append(line + "\n");
             }
+           error = readAll(p.getErrorStream());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
+        return error;
+    }
+
+  private static String readAll(InputStream is){
+        StringBuffer output = new StringBuffer();
+        BufferedReader reader =
+                new BufferedReader(new InputStreamReader(is));
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+            return output.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return output.toString();
     }
 
