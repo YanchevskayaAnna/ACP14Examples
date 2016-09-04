@@ -20,24 +20,21 @@ public class TestExecuteFromJava {
 
     public static String executeCommand(String command) {
 
-        StringBuffer output = new StringBuffer();
+        String output = "";
         String error = "";
-        Process p;
+
         try {
+            Process p;
             p = Runtime.getRuntime().exec(command);
             p.waitFor();
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
-           error = readAll(p.getErrorStream());
+            output = readAll(p.getInputStream());
+            error = readAll(p.getErrorStream());
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return error;
+        return error == ""?output:error;
     }
 
   private static String readAll(InputStream is){
